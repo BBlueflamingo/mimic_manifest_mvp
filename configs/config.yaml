@@ -9,9 +9,9 @@
       "path_template": "p{subject_id_prefix}/p{subject_id}/s{study_id}.txt"
     },
     "chest_imagenome_annotations": {
-      "path": "D:/PATH_TO_CHEST_IMAGENOME/imagenome_annotations.csv",
-      "format": "csv",
-      "dicom_id_column": "dicom_id"
+      "path": "D:/research/dataset/scene_graph/scene_graph",
+      "format": "scene_graph_dir",
+      "dicom_id_column": "image_id"
     },
     "mscxr_annotations": {
       "path": "D:/PATH_TO_MS_CXR/mscxr_annotations.csv",

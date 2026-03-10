@@ -68,7 +68,7 @@ def load_metadata(config: dict[str, Any]) -> list[dict[str, str]]:
 
 
 def load_annotation_id_set(section_config: dict[str, Any], section_name: str) -> set[str]:
-    """Load a dicom_id set from a CSV, JSONL, or JSON annotation file."""
+    """Load a dicom_id set from a supported annotation source."""
     path = Path(section_config["path"])
     if not path.exists():
         raise FileNotFoundError(f"{section_name} annotation file does not exist: {path}")
@@ -102,12 +102,42 @@ def load_annotation_id_set(section_config: dict[str, Any], section_name: str) ->
         with open_text(path) as handle:
             payload = json.load(handle)
         dicom_ids = extract_dicom_ids_from_json(payload, dicom_id_column, section_name, path)
+    elif fmt == "scene_graph_dir":
+        dicom_ids = load_scene_graph_dir_ids(path, dicom_id_column, section_name)
     else:
         raise ConfigError(
-            f"{section_name} format must be one of csv/json/jsonl, got '{fmt}' for {path}"
+            f"{section_name} format must be one of csv/json/jsonl/scene_graph_dir, got '{fmt}' for {path}"
         )
 
     LOGGER.info("Loaded %s unique dicom_ids from %s", len(dicom_ids), path)
+    return dicom_ids
+
+
+def load_scene_graph_dir_ids(path: Path, dicom_id_column: str, section_name: str) -> set[str]:
+    """Scan a directory of per-image scene graph JSON files and collect image IDs."""
+    if not path.is_dir():
+        raise ConfigError(
+            f"{section_name} with format='scene_graph_dir' must point to a directory: {path}"
+        )
+
+    scene_graph_files = sorted(path.glob("*_SceneGraph.json"))
+    if not scene_graph_files:
+        raise ConfigError(f"No *_SceneGraph.json files found in {path}")
+
+    dicom_ids: set[str] = set()
+    for scene_graph_path in scene_graph_files:
+        with open_text(scene_graph_path) as handle:
+            payload = json.load(handle)
+        if not isinstance(payload, dict):
+            raise ConfigError(
+                f"{section_name} scene graph must be a JSON object: {scene_graph_path}"
+            )
+        value = payload.get(dicom_id_column)
+        if value is None:
+            raise ConfigError(
+                f"{section_name} scene graph missing '{dicom_id_column}': {scene_graph_path}"
+            )
+        dicom_ids.add(str(value).strip())
     return dicom_ids
 
 

@@ -87,6 +87,18 @@ Required annotation columns:
 - Chest ImaGenome file must expose the configured `dicom_id_column`
 - MS-CXR file must expose the configured `dicom_id_column`
 
+For Chest ImaGenome scene graph directories, use:
+
+```json
+"chest_imagenome_annotations": {
+  "path": "D:/research/dataset/scene_graph/scene_graph",
+  "format": "scene_graph_dir",
+  "dicom_id_column": "image_id"
+}
+```
+
+In that format, each `*_SceneGraph.json` is scanned and the top-level `image_id` is treated as the MIMIC-CXR `dicom_id`.
+
 If `io.reports.mode = "csv"`, the report CSV must expose:
 
 - the configured `study_id_column`

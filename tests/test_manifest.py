@@ -85,3 +85,12 @@ def test_copied_subset_present(synthetic_config: Path) -> None:
     assert copied_subset_dir.exists()
     assert any((copied_subset_dir / split / "images").exists() for split in ("train", "val", "test"))
     assert any((copied_subset_dir / split / "reports").exists() for split in ("train", "val", "test"))
+
+
+def test_scene_graph_dir_supported(synthetic_scene_graph_config: Path) -> None:
+    """Chest ImaGenome scene graph directories should work as an annotation source."""
+    outputs = build_manifest(synthetic_scene_graph_config)
+    rows = read_manifest_rows(outputs["usable_samples_csv"])
+
+    assert rows
+    assert all(row["has_imagenome_anchor"] == "1" for row in rows)

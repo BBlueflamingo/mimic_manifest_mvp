@@ -1,0 +1,80 @@
+{
+  "random_seed": 1337,
+  "io": {
+    "metadata_csv": "D:/PATH_TO_MIMIC_METADATA/mimic-cxr-2.0.0-metadata.csv.gz",
+    "mimic_jpg_root": "D:/PATH_TO_MIMIC_JPG/files",
+    "reports": {
+      "mode": "directory",
+      "root": "D:/PATH_TO_MIMIC_REPORTS/files",
+      "path_template": "p{subject_id_prefix}/p{subject_id}/s{study_id}.txt"
+    },
+    "chest_imagenome_annotations": {
+      "path": "D:/PATH_TO_CHEST_IMAGENOME/imagenome_annotations.csv",
+      "format": "csv",
+      "dicom_id_column": "dicom_id"
+    },
+    "mscxr_annotations": {
+      "path": "D:/PATH_TO_MS_CXR/mscxr_annotations.csv",
+      "format": "csv",
+      "dicom_id_column": "dicom_id"
+    }
+  },
+  "columns": {
+    "metadata": {
+      "subject_id": "subject_id",
+      "study_id": "study_id",
+      "dicom_id": "dicom_id",
+      "view_position": "ViewPosition"
+    }
+  },
+  "paths": {
+    "image_path_template": "p{subject_id_prefix}/p{subject_id}/s{study_id}/{dicom_id}.jpg"
+  },
+  "sampling": {
+    "allowed_view_positions": ["PA", "AP"],
+    "target_images": 10000,
+    "subject_split": {
+      "train": 0.8,
+      "val": 0.1,
+      "test": 0.1
+    },
+    "min_mscxr_images": 500
+  },
+  "reports": {
+    "prefer_sections": ["impression", "findings"],
+    "rationale_keywords": [
+      "opacity",
+      "effusion",
+      "edema",
+      "pneumonia",
+      "atelectasis",
+      "cardiomegaly",
+      "consolidation",
+      "nodule",
+      "mass",
+      "fracture",
+      "pneumothorax"
+    ]
+  },
+  "validation": {
+    "require_image_exists": true,
+    "require_non_empty_report": true
+  },
+  "outputs": {
+    "output_dir": "outputs/mimic_manifest_mvp",
+    "usable_samples_csv": "usable_samples.csv",
+    "usable_samples_jsonl": "usable_samples.jsonl",
+    "claims_gold_jsonl": "claims_gold.jsonl",
+    "stats_json": "stats.json",
+    "subject_split_dir": "subject_splits"
+  },
+  "asset_copy": {
+    "enabled": true,
+    "output_dir": "outputs/mimic_manifest_mvp/copied_subset",
+    "copy_images": true,
+    "copy_reports": true
+  },
+  "logging": {
+    "level": "INFO"
+  }
+}

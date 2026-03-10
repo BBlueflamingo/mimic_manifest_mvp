@@ -57,7 +57,7 @@
     ]
   },
   "validation": {
-    "require_image_exists": true,
+    "require_image_exists": false,
     "require_non_empty_report": true
   },
   "outputs": {
@@ -69,7 +69,7 @@
     "subject_split_dir": "subject_splits"
   },
   "asset_copy": {
-    "enabled": true,
+    "enabled": false
     "output_dir": "outputs/mimic_manifest_mvp/copied_subset",
     "copy_images": true,
     "copy_reports": true
